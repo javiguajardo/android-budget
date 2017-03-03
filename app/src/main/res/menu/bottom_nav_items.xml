@@ -15,5 +15,5 @@
     <item
         android:id="@+id/menu_expenses"
         android:icon="@drawable/ic_money"
-        android:title="@string/menu_expenses" />
+        android:title="@string/menu_expenses"/>
 </menu>

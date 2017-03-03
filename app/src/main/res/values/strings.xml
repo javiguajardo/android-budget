@@ -1,7 +1,18 @@
 <resources>
-    <string name="app_name">MiPresupuesto</string>
+    <string name="app_name">Mi Presupuesto</string>
     <string name="menu_home">Inicio</string>
     <string name="menu_account">Cuentas</string>
     <string name="menu_category">Categorias</string>
     <string name="menu_expenses">Gastos</string>
+    <string name="add">Agregar</string>
+    <string name="name">Nombre</string>
+    <string name="amount">Ingreso</string>
+    <string name="save">Guardar</string>
+    <string name="account_type">Tipo de cuenta</string>
+    <string name="income">Ingresos</string>
+    <string-array name="account_types_array">
+        <item>Cheque</item>
+        <item>Ahorro</item>
+        <item>Efectivo</item>
+    </string-array>
 </resources>
