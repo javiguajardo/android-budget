@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import accounts.Account;
 
@@ -38,6 +39,11 @@ public class AddAcountActivity extends AppCompatActivity {
         amount = String.valueOf(accountAmount.getText());
         accountType = spinner.getSelectedItem().toString();
         Intent intent = new Intent(getBaseContext(), AccountActivity.class);
+
+        if (name.matches("") || amount.matches("")) {
+            Toast.makeText(this, "Favor de llenar todos los campos", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Account.addAccount(accounts, new Account(name, accountType, Float.parseFloat(amount)));
         startActivity(intent);

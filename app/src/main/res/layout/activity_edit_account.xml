@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:weightSum="1"
-    tools:context="guajardo.budget.AddAcountActivity">
+    tools:context="guajardo.budget.EditAccountActivity">
 
     <EditText
         android:id="@+id/account_name_edit"

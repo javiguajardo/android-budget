@@ -10,7 +10,6 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
-    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +25,12 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.menu_account:
-                                intent = new Intent(getBaseContext(), AccountActivity.class);
-                                startActivity(intent);
+                                Intent intentAccount = new Intent(getBaseContext(), AccountActivity.class);
+                                startActivity(intentAccount);
+                                break;
+                            case R.id.menu_category:
+                                Intent intentCategory = new Intent(getBaseContext(), CategoryActivity.class);
+                                startActivity(intentCategory);
                                 break;
                         }
                         return true;

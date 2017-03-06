@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import accounts.Account;
 
@@ -15,12 +17,8 @@ import static guajardo.budget.AccountActivity.*;
 public class EditAccountActivity extends AppCompatActivity {
     Spinner spinner;
     EditText accountName, accountAmount;
-    String name;
+    String name, accountType, newName, newAccountType, newAmount;
     float amount;
-    String accountType;
-    String newName;
-    String newAccountType;
-    String newAmount;
     int index;
 
     @Override
@@ -53,6 +51,11 @@ public class EditAccountActivity extends AppCompatActivity {
         newAccountType = spinner.getSelectedItem().toString();
         newAmount = accountAmount.getText().toString();
         Intent intent = new Intent(getBaseContext(), AccountActivity.class);
+
+        if (newName.matches("") || newAmount.matches("")) {
+            Toast.makeText(this, "Favor de llenar todos los campos", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Account.updateAccount(accounts, index, newName, newAccountType, Float.parseFloat(newAmount));
         startActivity(intent);

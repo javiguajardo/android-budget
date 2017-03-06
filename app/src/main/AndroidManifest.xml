@@ -26,7 +26,10 @@
         </activity>
         <activity android:name=".AccountActivity" />
         <activity android:name=".AddAcountActivity" />
-        <activity android:name=".EditAccountActivity"></activity>
+        <activity android:name=".EditAccountActivity" />
+        <activity android:name=".CategoryActivity" />
+        <activity android:name=".AddCategoryActivity" />
+        <activity android:name=".EditCategoryActivity"></activity>
     </application>
 
 </manifest>
