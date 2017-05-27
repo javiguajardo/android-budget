@@ -8,11 +8,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import categories.Category;
-
-import static guajardo.budget.AccountActivity.accounts;
-import static guajardo.budget.CategoryActivity.*;
-
 public class AddCategoryActivity extends AppCompatActivity {
     EditText categoryName, categoryAmount;
     String name, amount;
@@ -28,7 +23,7 @@ public class AddCategoryActivity extends AppCompatActivity {
         categoryAmount = (EditText) findViewById(R.id.category_amount_edit);
         budgetAmount = (TextView) findViewById(R.id.budget_amount);
 
-        budgetAmount.setText("$ " + Category.toBudget(categories, accounts));
+        //budgetAmount.setText("$ " + Category.toBudget(categories, accounts));
     }
 
     public void saveCategory(View view) {
@@ -41,7 +36,7 @@ public class AddCategoryActivity extends AppCompatActivity {
             return;
         }
 
-        Category.addCategory(categories, new Category(name, Float.parseFloat(amount)));
+       // Category.addCategory(categories, new Category(name, Float.parseFloat(amount)));
         startActivity(intent);
 
     }

@@ -11,14 +11,18 @@
     android:orientation="vertical"
     tools:context="guajardo.budget.AccountActivity">
 
-    <Button
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="@string/add"
-        android:textColor="@color/white"
-        android:background="@color/colorPrimaryDark"
-        android:onClick="addAccount"
-        android:id="@+id/add_btn" />
+    <LinearLayout android:layout_height="wrap_content"
+                  android:layout_width="wrap_content"
+                  android:orientation="horizontal">
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/add"
+            android:textColor="@color/white"
+            android:background="@color/colorPrimaryDark"
+            android:onClick="addAccount"
+            android:id="@+id/add_btn" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

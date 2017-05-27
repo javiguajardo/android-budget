@@ -9,8 +9,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import accounts.Account;
-
 import static guajardo.budget.AccountActivity.*;
 
 public class AddAcountActivity extends AppCompatActivity {
@@ -45,7 +43,7 @@ public class AddAcountActivity extends AppCompatActivity {
             return;
         }
 
-        Account.addAccount(accounts, new Account(name, accountType, Float.parseFloat(amount)));
+        //Account.addAccount(accounts, new Account(name, accountType, Float.parseFloat(amount)));
         startActivity(intent);
     }
 }

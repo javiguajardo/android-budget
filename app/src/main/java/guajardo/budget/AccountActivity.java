@@ -5,25 +5,42 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import accounts.Account;
+import guajardo.budget.adapters.AccountAdapter;
+import guajardo.budget.models.Account;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
+
 
 public class AccountActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private MenuItem selectedItem;
-    static List<Account> accounts = new ArrayList<>();
+    private ArrayList<String> accountIds = new ArrayList<String>();
     ListView accountList;
     TextView incomeAmount;
 
@@ -34,15 +51,12 @@ public class AccountActivity extends AppCompatActivity {
         setContentView(R.layout.activity_account);
         setTitle("Cuentas");
 
+
+        accountList = (ListView) findViewById(R.id.account_list);
+        registerForContextMenu(accountList);
+
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
         selectedItem = bottomNavigationView.getMenu().getItem(1);
-        accountList = (ListView) findViewById(R.id.account_list);
-        incomeAmount = (TextView) findViewById(R.id.income_amount);
-        MyAdapter adapter = new MyAdapter();
-
-        incomeAmount.setText("$ " + Account.getIncomeSum(accounts));
-        accountList.setAdapter(adapter);
-        registerForContextMenu(accountList);
         selectedItem.setChecked(true);
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -61,6 +75,8 @@ public class AccountActivity extends AppCompatActivity {
                         return true;
                     }
                 });
+
+        loadAccounts();
     }
 
     public void addAccount(View view) {
@@ -68,66 +84,111 @@ public class AccountActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    class MyAdapter extends BaseAdapter {
+    public void setAccountIds(String ids) {
+        accountIds.add(ids);
+    }
 
-        @Override
-        public int getCount() {
-            return accounts.size();
-        }
+    public ArrayList<String> getAccountIds() {
+        return accountIds;
+    }
 
-        @Override
-        public Object getItem(int position) {
-            return accounts.get(position);
-        }
+    public void loadAccounts() {
+        String url = "https://polar-sierra-78542.herokuapp.com/accounts";
+        RequestQueue queue = Volley.newRequestQueue(this);
 
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    ArrayList<Account> accountArray = new ArrayList<Account>();
+                    AccountAdapter accountAdapter = new AccountAdapter(AccountActivity.this, accountArray);
 
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = getLayoutInflater().inflate(R.layout.account_cell, parent, false);
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        JSONArray jsonAccountsArray = null;
+                        Double jsonIncome = null;
+                        try {
+                            jsonAccountsArray = response.getJSONArray("accounts");
+                            jsonIncome = response.getDouble("total_income");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        System.out.println("====" + jsonIncome);
+
+                        for(int i = 0; i < jsonAccountsArray.length(); i++) {
+                            try {
+                                Account account = new Account(jsonAccountsArray.getJSONObject(i));
+                                accountAdapter.add(account);
+                                setAccountIds(account.getId());
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        incomeAmount = (TextView) findViewById(R.id.income);
+                        incomeAmount.setText("$ " + jsonIncome);
+
+                        accountList = (ListView) findViewById(R.id.account_list);
+                        accountList.setAdapter(accountAdapter);
+                        accountAdapter.notifyDataSetChanged();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(),
+                        error.getMessage(), Toast.LENGTH_SHORT).show();
             }
+        });
 
-            Account currentAccount = (Account) getItem(position);
+        // Add the request to the RequestQueue.
+        queue.add(jsonObjectRequest);
+    }
 
-            TextView nameCell = (TextView) convertView.findViewById(R.id.name_cell);
-            TextView amountCell = (TextView) convertView.findViewById(R.id.amount_cell);
+    public void deleteAccount(String id) {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "https://polar-sierra-78542.herokuapp.com/accounts/" + id;
 
-            nameCell.setText(currentAccount.getName());
-            amountCell.setText("$ " + String.valueOf(currentAccount.getAmount()));
+        StringRequest dr = new StringRequest(Request.Method.DELETE, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Intent i = new Intent(getBaseContext(), AccountActivity.class);
+                        startActivity(i);
+                        finish();
 
-            return convertView;
-        }
+                        Toast.makeText(getApplicationContext(), "Cuenta eliminada exitosamente",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), error.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+        queue.add(dr);
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
-    {
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.add(0, v.getId(), 0, "Editar");//groupId, itemId, order, title
         menu.add(0, v.getId(), 0, "Eliminar");
     }
+
     @Override
-    public boolean onContextItemSelected(MenuItem item){
+    public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int index = info.position;
 
-        if(item.getTitle()=="Editar"){
-            Intent intent = new Intent(getBaseContext(), EditAccountActivity.class);
-            intent.putExtra("index", index);
-            intent.putExtra("name", accounts.get(index).getName());
-            intent.putExtra("accountType", accounts.get(index).getAccountType());
-            intent.putExtra("amount", accounts.get(index).getAmount());
-            startActivity(intent);
-        }
-        else if(item.getTitle()=="Eliminar"){
-            Intent intent = new Intent(getBaseContext(), AccountActivity.class);
-            Account.removeAccount(accounts, index);
-            startActivity(intent);
-        }else{
+
+        if (item.getTitle() == "Eliminar") {
+            String accountId = getAccountIds().get(index);
+
+            deleteAccount(accountId);
+        } else {
             return false;
         }
         return true;

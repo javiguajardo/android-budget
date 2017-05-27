@@ -18,15 +18,12 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import accounts.Account;
-import categories.Category;
-
 import static guajardo.budget.AccountActivity.*;
 
 public class CategoryActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private MenuItem selectedItem;
-    static List<Category> categories = new ArrayList<>();
+    //static List<Category> categories = new ArrayList<>();
     ListView categoryList;
     TextView budgetAmount;
 
@@ -40,10 +37,8 @@ public class CategoryActivity extends AppCompatActivity {
         selectedItem = bottomNavigationView.getMenu().getItem(2);
         categoryList = (ListView) findViewById(R.id.category_list);
         budgetAmount = (TextView) findViewById(R.id.budget_amount);
-        MyAdapter adapter = new MyAdapter();
 
-        budgetAmount.setText("$ " + Category.toBudget(categories, accounts));
-        categoryList.setAdapter(adapter);
+       // budgetAmount.setText("$ " + Category.toBudget(categories, accounts));
         registerForContextMenu(categoryList);
         selectedItem.setChecked(true);
         bottomNavigationView.setOnNavigationItemSelectedListener(
@@ -70,41 +65,6 @@ public class CategoryActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    class MyAdapter extends BaseAdapter {
-
-        @Override
-        public int getCount() {
-            return categories.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return categories.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = getLayoutInflater().inflate(R.layout.category_cell, parent, false);
-            }
-
-            Category currentCategory = (Category) getItem(position);
-
-            TextView nameCell = (TextView) convertView.findViewById(R.id.name_cell);
-            TextView amountCell = (TextView) convertView.findViewById(R.id.amount_cell);
-
-            nameCell.setText(currentCategory.getName());
-            amountCell.setText("$ " + String.valueOf(currentCategory.getAmount()));
-
-            return convertView;
-        }
-    }
-
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
     {
@@ -120,13 +80,13 @@ public class CategoryActivity extends AppCompatActivity {
         if(item.getTitle()=="Editar"){
             Intent intent = new Intent(getBaseContext(), EditCategoryActivity.class);
             intent.putExtra("index", index);
-            intent.putExtra("name", categories.get(index).getName());
-            intent.putExtra("amount", categories.get(index).getAmount());
+            //intent.putExtra("name", categories.get(index).getName());
+            //intent.putExtra("amount", categories.get(index).getAmount());
             startActivity(intent);
         }
         else if(item.getTitle()=="Eliminar"){
             Intent intent = new Intent(getBaseContext(), CategoryActivity.class);
-            Category.removeCategory(categories, index);
+            //Category.removeCategory(categories, index);
             startActivity(intent);
         }else{
             return false;
