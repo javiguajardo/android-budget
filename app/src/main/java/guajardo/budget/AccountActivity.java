@@ -113,7 +113,6 @@ public class AccountActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
 
-                        System.out.println("====" + jsonIncome);
 
                         for(int i = 0; i < jsonAccountsArray.length(); i++) {
                             try {
