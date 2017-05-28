@@ -27,7 +27,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 
 import guajardo.budget.adapters.CategoryAdapter;
 import guajardo.budget.models.Category;
@@ -39,7 +38,6 @@ public class CategoryActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private MenuItem selectedItem;
     private ArrayList<Category> categories = new ArrayList<Category>();
-    private ArrayList<String> categoryIds = new ArrayList<String>();
     ListView categoryList;
     TextView budgetAmount;
 
@@ -81,15 +79,6 @@ public class CategoryActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
-    public void setCategoryIds(String ids) {
-        categoryIds.add(ids);
-    }
-
-    public ArrayList<String> getCategoryIds() {
-        return categoryIds;
-    }
-
     public void setCategories(Category category) {
         categories.add(category);
     }
@@ -125,7 +114,6 @@ public class CategoryActivity extends AppCompatActivity {
                                 Category category = new Category(jsonCategoriesArray.getJSONObject(i));
                                 categoryAdapter.add(category);
 
-                                setCategoryIds(category.getId());
                                 setCategories(category);
 
                             } catch (JSONException e) {
@@ -194,14 +182,13 @@ public class CategoryActivity extends AppCompatActivity {
         if(item.getTitle()=="Editar"){
             Intent intent = new Intent(getBaseContext(), EditCategoryActivity.class);
 
-            System.out.println("=========" + categories.get(index).getId() + categories.get(index).getName() + categories.get(index).getAmount());
             intent.putExtra("id", categories.get(index).getId());
             intent.putExtra("name", categories.get(index).getName());
             intent.putExtra("amount", categories.get(index).getAmount());
             startActivity(intent);
         }
         else if(item.getTitle()=="Eliminar"){
-            String categoryId = getCategoryIds().get(index);
+            String categoryId = categories.get(index).getId();
 
             deleteCategory(categoryId);
         }else{

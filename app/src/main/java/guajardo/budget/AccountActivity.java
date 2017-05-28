@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
@@ -19,9 +18,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -33,14 +30,13 @@ import java.util.ArrayList;
 
 import guajardo.budget.adapters.AccountAdapter;
 import guajardo.budget.models.Account;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
+import guajardo.budget.models.Category;
 
 
 public class AccountActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private MenuItem selectedItem;
-    private ArrayList<String> accountIds = new ArrayList<String>();
+    private ArrayList<Account> accounts = new ArrayList<Account>();
     ListView accountList;
     TextView incomeAmount;
 
@@ -84,12 +80,12 @@ public class AccountActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void setAccountIds(String ids) {
-        accountIds.add(ids);
+    public void setAccounts(Account account) {
+        accounts.add(account);
     }
 
-    public ArrayList<String> getAccountIds() {
-        return accountIds;
+    public ArrayList<Account> getAccounts() {
+        return accounts;
     }
 
     public void loadAccounts() {
@@ -114,11 +110,13 @@ public class AccountActivity extends AppCompatActivity {
                         }
 
 
-                        for(int i = 0; i < jsonAccountsArray.length(); i++) {
+                        for (int i = 0; i < jsonAccountsArray.length(); i++) {
                             try {
                                 Account account = new Account(jsonAccountsArray.getJSONObject(i));
                                 accountAdapter.add(account);
-                                setAccountIds(account.getId());
+
+                                setAccounts(account);
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -182,9 +180,17 @@ public class AccountActivity extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int index = info.position;
 
+        if (item.getTitle() == "Editar") {
+            Intent intent = new Intent(getBaseContext(), EditAccountActivity.class);
 
-        if (item.getTitle() == "Eliminar") {
-            String accountId = getAccountIds().get(index);
+            intent.putExtra("id", accounts.get(index).getId());
+            intent.putExtra("name", accounts.get(index).getName());
+            intent.putExtra("acctType", accounts.get(index).getAcctType());
+            intent.putExtra("amount", accounts.get(index).getAmount());
+
+            startActivity(intent);
+        } else if (item.getTitle() == "Eliminar") {
+            String accountId = accounts.get(index).getId();
 
             deleteAccount(accountId);
         } else {
