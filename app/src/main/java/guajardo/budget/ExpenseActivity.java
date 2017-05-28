@@ -1,6 +1,5 @@
 package guajardo.budget;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -28,30 +27,30 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import guajardo.budget.adapters.CategoryAdapter;
-import guajardo.budget.models.Category;
+import guajardo.budget.adapters.AccountAdapter;
+import guajardo.budget.adapters.ExpenseAdapter;
+import guajardo.budget.models.Account;
+import guajardo.budget.models.Expense;
 
-import static android.R.attr.category;
-
-
-public class CategoryActivity extends AppCompatActivity {
+public class ExpenseActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private MenuItem selectedItem;
-    private ArrayList<Category> categories = new ArrayList<Category>();
-    ListView categoryList;
-    TextView budgetAmount;
+    private ArrayList<Expense> expenses = new ArrayList<Expense>();
+    ListView expenseList;
+    TextView totalExpenses;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_category);
-        setTitle("Categorias");
+        setContentView(R.layout.activity_expense);
+        setTitle("Gastos");
 
-        categoryList = (ListView) findViewById(R.id.category_list);
-        registerForContextMenu(categoryList);
+        expenseList = (ListView) findViewById(R.id.expense_list);
+        registerForContextMenu(expenseList);
 
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
-        selectedItem = bottomNavigationView.getMenu().getItem(2);
+        selectedItem = bottomNavigationView.getMenu().getItem(3);
         selectedItem.setChecked(true);
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -62,75 +61,78 @@ public class CategoryActivity extends AppCompatActivity {
                                 Intent intentHome = new Intent(getBaseContext(), MainActivity.class);
                                 startActivity(intentHome);
                                 break;
+                            case R.id.menu_category:
+                                Intent intentCategory = new Intent(getBaseContext(), CategoryActivity.class);
+                                startActivity(intentCategory);
+                                break;
                             case R.id.menu_account:
                                 Intent intentAccount = new Intent(getBaseContext(), AccountActivity.class);
                                 startActivity(intentAccount);
                                 break;
-                            case R.id.menu_expenses:
-                                Intent intentExpense = new Intent(getBaseContext(), ExpenseActivity.class);
-                                startActivity(intentExpense);
-                                break;
+
                         }
                         return true;
                     }
                 });
 
-        loadCategories();
+        loadExpenses();
     }
 
-    public void addCategory(View view) {
-        Intent intent = new Intent(getBaseContext(), AddCategoryActivity.class);
+    public void addExpense(View view) {
+        /*
+        Intent intent = new Intent(getBaseContext(), AddExpenseActivity.class);
         startActivity(intent);
+        */
     }
 
-    public void setCategories(Category category) {
-        categories.add(category);
+    public void setExpenses(Expense expense) {
+        expenses.add(expense);
     }
 
-    public ArrayList<Category> getCategories() {
-        return categories;
+    public ArrayList<Expense> getExpenses() {
+        return expenses;
     }
 
-    public void loadCategories() {
-        String url = "https://polar-sierra-78542.herokuapp.com/categories";
+    public void loadExpenses() {
+        String url = "https://polar-sierra-78542.herokuapp.com/expenses";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
-                    ArrayList<Category> categoryArray = new ArrayList<Category>();
-                    CategoryAdapter categoryAdapter = new CategoryAdapter(CategoryActivity.this, categoryArray);
+                    ArrayList<Expense> expenseArray = new ArrayList<Expense>();
+                    ExpenseAdapter expenseAdapter = new ExpenseAdapter(ExpenseActivity.this, expenseArray);
 
                     @Override
                     public void onResponse(JSONObject response) {
 
-                        JSONArray jsonCategoriesArray = null;
-                        Double jsonLeftToBudget = null;
+                        JSONArray jsonExpensesArray = null;
+                        Double jsonTotalExpenses = null;
                         try {
-                            jsonCategoriesArray = response.getJSONArray("categories");
-                            jsonLeftToBudget = response.getDouble("left_to_budget");
+                            jsonExpensesArray = response.getJSONArray("expenses");
+                            jsonTotalExpenses = response.getDouble("total_expenses");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
 
-                        for(int i = 0; i < jsonCategoriesArray.length(); i++) {
+                        for (int i = 0; i < jsonExpensesArray.length(); i++) {
                             try {
-                                Category category = new Category(jsonCategoriesArray.getJSONObject(i));
-                                categoryAdapter.add(category);
+                                Expense expense = new Expense(jsonExpensesArray.getJSONObject(i));
+                                expenseAdapter.add(expense);
 
-                                setCategories(category);
+                                setExpenses(expense);
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
 
-                        budgetAmount = (TextView) findViewById(R.id.budget_amount);
-                        budgetAmount.setText("$ " + jsonLeftToBudget);
+                        totalExpenses = (TextView) findViewById(R.id.total_expenses);
+                        totalExpenses.setText("$ " + jsonTotalExpenses);
 
-                        categoryList = (ListView) findViewById(R.id.category_list);
-                        categoryList.setAdapter(categoryAdapter);
-                        categoryAdapter.notifyDataSetChanged();
+                        expenseList = (ListView) findViewById(R.id.expense_list);
+                        expenseList.setAdapter(expenseAdapter);
+                        expenseAdapter.notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -144,19 +146,20 @@ public class CategoryActivity extends AppCompatActivity {
         queue.add(jsonObjectRequest);
     }
 
-    public void deleteCategory(String id) {
+
+    public void deleteExpense(String id) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://polar-sierra-78542.herokuapp.com/categories/" + id;
+        String url = "https://polar-sierra-78542.herokuapp.com/expenses/" + id;
 
         StringRequest dr = new StringRequest(Request.Method.DELETE, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Intent i = new Intent(getBaseContext(), CategoryActivity.class);
+                        Intent i = new Intent(getBaseContext(), ExpenseActivity.class);
                         startActivity(i);
                         finish();
 
-                        Toast.makeText(getApplicationContext(), "Categoria eliminada exitosamente",
+                        Toast.makeText(getApplicationContext(), "Gasto eliminado exitosamente",
                                 Toast.LENGTH_SHORT).show();
                     }
                 },
@@ -172,32 +175,38 @@ public class CategoryActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
-    {
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.add(0, v.getId(), 0, "Editar");//groupId, itemId, order, title
         menu.add(0, v.getId(), 0, "Eliminar");
     }
+
     @Override
-    public boolean onContextItemSelected(MenuItem item){
+    public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int index = info.position;
 
-        if(item.getTitle()=="Editar"){
-            Intent intent = new Intent(getBaseContext(), EditCategoryActivity.class);
+        if (item.getTitle() == "Editar") {
+            /*
+            Intent intent = new Intent(getBaseContext(), EditExpenseActivity.class);
 
-            intent.putExtra("id", categories.get(index).getId());
-            intent.putExtra("name", categories.get(index).getName());
-            intent.putExtra("amount", categories.get(index).getAmount());
+            intent.putExtra("id", expenses.get(index).getId());
+            intent.putExtra("date", expenses.get(index).getDate());
+            intent.putExtra("store", expenses.get(index).getStore());
+            intent.putExtra("amount", expenses.get(index).getAmount());
+            intent.putExtra("categoryId", expenses.get(index).getCategoryId());
+
             startActivity(intent);
-        }
-        else if(item.getTitle()=="Eliminar"){
-            String categoryId = categories.get(index).getId();
+            */
+        } else if (item.getTitle() == "Eliminar") {
+            String expenseId = expenses.get(index).getId();
 
-            deleteCategory(categoryId);
-        }else{
+            deleteExpense(expenseId);
+        } else {
             return false;
         }
         return true;
     }
+
+
 }
