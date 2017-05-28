@@ -22,8 +22,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import static android.provider.ContactsContract.CommonDataKinds.Website.URL;
-
 
 public class AddAcountActivity extends AppCompatActivity {
     Spinner spinner;
