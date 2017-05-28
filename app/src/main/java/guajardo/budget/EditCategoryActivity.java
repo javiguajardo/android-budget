@@ -40,10 +40,8 @@ public class EditCategoryActivity extends AppCompatActivity {
         amount = getIntent().getStringExtra("amount");
         id = getIntent().getStringExtra("id");
 
-        System.out.println("======" + amount);
-
         categoryName.setText(name);
-        categoryAmount.setText(String.valueOf(amount));
+        categoryAmount.setText(amount);
     }
 
     public void saveAccount(View view) {
@@ -97,6 +95,5 @@ public class EditCategoryActivity extends AppCompatActivity {
         queue.add(postRequest);
 
     }
-
 
 }
