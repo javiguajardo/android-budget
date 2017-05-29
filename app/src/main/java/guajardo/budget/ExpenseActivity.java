@@ -79,10 +79,8 @@ public class ExpenseActivity extends AppCompatActivity {
     }
 
     public void addExpense(View view) {
-        /*
         Intent intent = new Intent(getBaseContext(), AddExpenseActivity.class);
         startActivity(intent);
-        */
     }
 
     public void setExpenses(Expense expense) {
@@ -207,6 +205,4 @@ public class ExpenseActivity extends AppCompatActivity {
         }
         return true;
     }
-
-
 }

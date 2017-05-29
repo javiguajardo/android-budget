@@ -13,10 +13,14 @@
     <string name="income">Ingresos</string>
     <string name="expense">Gastos</string>
     <string name="to_budget">Disponible para alocar</string>
-    <string name="load_accounts">Cargar cuentas</string>
+    <string name="store">Tienda</string>
+    <string name="date">Fecha</string>
     <string-array name="account_types_array">
         <item>cheque</item>
         <item>ahorro</item>
         <item>efectivo</item>
     </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

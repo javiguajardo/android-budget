@@ -32,7 +32,8 @@
         <activity android:name=".CategoryActivity" />
         <activity android:name=".AddCategoryActivity" />
         <activity android:name=".EditCategoryActivity" />
-        <activity android:name=".ExpenseActivity"></activity>
+        <activity android:name=".ExpenseActivity" />
+        <activity android:name=".AddExpenseActivity"></activity>
     </application>
 
 </manifest>
