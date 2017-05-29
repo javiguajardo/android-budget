@@ -67,6 +67,11 @@ public class AccountActivity extends AppCompatActivity {
                                 Intent intentCategory = new Intent(getBaseContext(), CategoryActivity.class);
                                 startActivity(intentCategory);
                                 break;
+                            case R.id.menu_expenses:
+                                Intent intentExpense = new Intent(getBaseContext(), ExpenseActivity.class);
+                                startActivity(intentExpense);
+                                break;
+
                         }
                         return true;
                     }
@@ -122,7 +127,7 @@ public class AccountActivity extends AppCompatActivity {
                             }
                         }
 
-                        incomeAmount = (TextView) findViewById(R.id.income);
+                        incomeAmount = (TextView) findViewById(R.id.income_amount);
                         incomeAmount.setText("$ " + jsonIncome);
 
                         accountList = (ListView) findViewById(R.id.account_list);

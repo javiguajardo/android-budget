@@ -31,6 +31,10 @@ public class MainActivity extends AppCompatActivity {
                                 Intent intentCategory = new Intent(getBaseContext(), CategoryActivity.class);
                                 startActivity(intentCategory);
                                 break;
+                            case R.id.menu_expenses:
+                                Intent intentExpense = new Intent(getBaseContext(), ExpenseActivity.class);
+                                startActivity(intentExpense);
+                                break;
                         }
                         return true;
                     }
