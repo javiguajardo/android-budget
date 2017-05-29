@@ -15,13 +15,10 @@
     <string name="to_budget">Disponible para alocar</string>
     <string name="store">Tienda</string>
     <string name="date">Fecha</string>
+    <string name="cash_flow">Flujo de dinero</string>
     <string-array name="account_types_array">
         <item>cheque</item>
         <item>ahorro</item>
         <item>efectivo</item>
     </string-array>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_edit_expense">EditExpenseActivity</string>
 </resources>
