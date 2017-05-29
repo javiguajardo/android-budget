@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import guajardo.budget.adapters.BudgetAdapter;
 import guajardo.budget.adapters.CategoryAdapter;
 import guajardo.budget.models.Category;
+import guajardo.budget.services.RegistrationService;
 
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
@@ -66,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         loadBudgets();
+
+        Intent i = new Intent(this, RegistrationService.class);
+        startService(i);
     }
 
     public void loadBudgets() {
