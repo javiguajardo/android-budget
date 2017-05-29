@@ -185,17 +185,15 @@ public class ExpenseActivity extends AppCompatActivity {
         int index = info.position;
 
         if (item.getTitle() == "Editar") {
-            /*
             Intent intent = new Intent(getBaseContext(), EditExpenseActivity.class);
 
             intent.putExtra("id", expenses.get(index).getId());
-            intent.putExtra("date", expenses.get(index).getDate());
+            intent.putExtra("eDate", expenses.get(index).getDate());
             intent.putExtra("store", expenses.get(index).getStore());
             intent.putExtra("amount", expenses.get(index).getAmount());
             intent.putExtra("categoryId", expenses.get(index).getCategoryId());
 
             startActivity(intent);
-            */
         } else if (item.getTitle() == "Eliminar") {
             String expenseId = expenses.get(index).getId();
 

@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -23,29 +24,35 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
-import java.text.SimpleDateFormat;
 import java.util.Map;
 
 import guajardo.budget.models.Category;
 
-
-public class AddExpenseActivity extends AppCompatActivity {
+public class EditExpenseActivity extends AppCompatActivity {
+    Spinner spinner;
+    EditText expenseDate, expenseStore, expenseAmount;
+    String id, store, newStore, eDate, newExpenseDate, categoryId, newCategoryId, amount, newAmount;
     Calendar myCalendar;
     DatePickerDialog.OnDateSetListener date;
-    EditText expenseDateEdit, expenseStore, expenseAmount;
-    Spinner spinner;
-    String expenseDate, store, categoryId, amount;
     private ArrayList<String> categories = new ArrayList<String>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_expense);
-        setTitle("Agregar Gasto");
+        setContentView(R.layout.activity_edit_expense);
+        setTitle("Editar Gasto");
+
+        store = getIntent().getStringExtra("store");
+        amount = getIntent().getStringExtra("amount");
+        eDate = getIntent().getStringExtra("eDate");
+        id = getIntent().getStringExtra("id");
+        categoryId = getIntent().getStringExtra("categoryId");
 
         expenseStore = (EditText) findViewById(R.id.expense_store_edit);
         expenseAmount = (EditText) findViewById(R.id.expense_amount_edit);
@@ -53,7 +60,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         spinner = (Spinner) findViewById(R.id.category_spinner);
         loadCategories();
 
-        expenseDateEdit = (EditText) findViewById(R.id.expense_date_edit);
+        expenseDate = (EditText) findViewById(R.id.expense_date_edit);
         myCalendar = Calendar.getInstance();
 
         date = new DatePickerDialog.OnDateSetListener() {
@@ -70,16 +77,20 @@ public class AddExpenseActivity extends AppCompatActivity {
 
         };
 
-        expenseDateEdit.setOnClickListener(new View.OnClickListener() {
+        expenseDate.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                new DatePickerDialog(AddExpenseActivity.this, date, myCalendar
+                new DatePickerDialog(EditExpenseActivity.this, date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+
+        expenseDate.setText(eDate);
+        expenseAmount.setText(amount);
+        expenseStore.setText(store);
     }
 
     private void updateLabel() {
@@ -87,7 +98,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         String myFormat = "yyyy-MM-dd"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
-        expenseDateEdit.setText(sdf.format(myCalendar.getTime()));
+        expenseDate.setText(sdf.format(myCalendar.getTime()));
     }
 
     private void loadSpinnerData() {
@@ -96,43 +107,44 @@ public class AddExpenseActivity extends AppCompatActivity {
 
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
+        spinner.setSelection(dataAdapter.getPosition(eDate));
+
 
     }
 
     public void saveExpense(View view) {
-        store = String.valueOf(expenseStore.getText());
-        expenseDate = String.valueOf(expenseDateEdit.getText());
-        amount = String.valueOf(expenseAmount.getText());
-        categoryId = spinner.getSelectedItem().toString();
+        newStore = expenseStore.getText().toString();
+        newCategoryId = spinner.getSelectedItem().toString();
+        newAmount = expenseAmount.getText().toString();
+        newExpenseDate = expenseDate.getText().toString();
         Intent i = new Intent(getBaseContext(), ExpenseActivity.class);
 
-        if (store.matches("") || amount.matches("") || expenseDate.matches("") || categoryId.matches("")) {
+        if (newStore.matches("") || newAmount.matches("") || newCategoryId.matches("") || newExpenseDate.matches("")) {
             Toast.makeText(this, "Favor de llenar todos los campos", Toast.LENGTH_SHORT).show();
             return;
         } else {
-            sendData(store, expenseDate, amount, categoryId);
+            sendData(id, newStore, newCategoryId, newExpenseDate, newAmount);
             startActivity(i);
         }
-
     }
 
-    public void sendData(String store, String expenseDate, String amount, String categoryId) {
-        String url = "https://polar-sierra-78542.herokuapp.com/expenses";
+    public void sendData(String id, String store, String categoryId, String expenseDate, String amount) {
+        String url = "https://polar-sierra-78542.herokuapp.com/expenses/" + id;
         RequestQueue queue = Volley.newRequestQueue(this);
         Map<String, String> jsonParams = new HashMap<String, String>();
 
         jsonParams.put("store", store);
+        jsonParams.put("category_id", categoryId);
         jsonParams.put("expense_date", expenseDate);
         jsonParams.put("amount", amount);
-        jsonParams.put("category_id", categoryId);
 
-        JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, url,
+        JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.PUT, url,
 
                 new JSONObject(jsonParams),
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Toast.makeText(getApplicationContext(), "Gasto agregado exitosamente",
+                        Toast.makeText(getApplicationContext(), "Gasto actualizado exitosamente",
                                 Toast.LENGTH_SHORT).show();
                     }
                 },
@@ -153,6 +165,7 @@ public class AddExpenseActivity extends AppCompatActivity {
             }
         };
         queue.add(postRequest);
+
     }
 
     public void loadCategories() {
@@ -194,4 +207,5 @@ public class AddExpenseActivity extends AppCompatActivity {
         // Add the request to the RequestQueue.
         queue.add(jsonObjectRequest);
     }
+
 }
