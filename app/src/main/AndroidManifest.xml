@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="guajardo.budget">
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="17"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <permission
+        android:name="guajardo.budget.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission
+        android:name="guajardo.budget..permission.C2D_MESSAGE" />
 
     <application
         android:allowBackup="true"
@@ -35,6 +43,36 @@
         <activity android:name=".ExpenseActivity" />
         <activity android:name=".AddExpenseActivity" />
         <activity android:name=".EditExpenseActivity"/>
+
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="guajardo.budget" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name="guajardo.budget.services.RegistrationService"
+            android:exported="false" />
+
+        <service
+            android:name="guajardo.budget.services.TokenRefreshListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name="guajardo.budget.services.NotificationListenerService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>

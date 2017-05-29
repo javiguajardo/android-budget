@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "869904089420",
+    "project_id": "budgetapi"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:869904089420:android:c64fd81048c66fe0",
+        "android_client_info": {
+          "package_name": "guajardo.budget"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "869904089420-mpq646qotak5u27u66jocr6dv8q2466f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrK-wxO1aymXlto7thxtkJ0Yg2eawx1M8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
